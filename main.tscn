@@ -1,0 +1,123 @@
+[gd_scene load_steps=3 format=3 uid="uid://caimfnfpmg06a"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_8ribb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dtao6"]
+bg_color = Color(0.678431, 0.215686, 0.211765, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8ribb")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+text = " Variables "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="VarName" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "name"
+
+[node name="VarType" type="OptionButton" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 4
+selected = 0
+popup/item_0/text = "byte"
+popup/item_0/id = 0
+popup/item_1/text = "word"
+popup/item_1/id = 1
+popup/item_2/text = "double word"
+popup/item_2/id = 2
+popup/item_3/text = "quad word"
+popup/item_3/id = 3
+
+[node name="VarValue" type="SpinBox" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -2e+06
+max_value = 2e+06
+rounded = true
+alignment = 3
+prefix = "val."
+
+[node name="AddVar" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = " ADD "
+
+[node name="VarList" type="ItemList" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RmvVar" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Remove Selected"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="Expression" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Expression"
+
+[node name="Output" type="TextEdit" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "OUTPUT"
+editable = false
+
+[node name="ErrorLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_dtao6")
+text = " ERROR:"
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AddVar" to="." method="_on_add_var_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/RmvVar" to="." method="_on_rmv_var_pressed"]
+[connection signal="text_changed" from="MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/Expression" to="." method="_on_expression_text_changed"]
