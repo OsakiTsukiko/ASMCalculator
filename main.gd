@@ -15,7 +15,7 @@ func _ready():
 	hide_error()
 	
 	print(
-		compute_operation(VAR_TYPE.WORD, Token.new(TOKEN_TYPE.OPERATOR, "+"), VAR_TYPE.BYTE).asm
+		compute_operation(VAR_TYPE.WORD, Token.new(TOKEN_TYPE.OPERATOR, "-"), VAR_TYPE.BYTE).asm
 	)
 
 func hide_error():
@@ -40,6 +40,7 @@ func _on_add_var_pressed():
 		vtype,
 		vvalue
 	)
+	
 	
 	var i = 0
 	for v in variable_list:
@@ -251,8 +252,10 @@ func compute_operation(a: VAR_TYPE, operand: Token, b: VAR_TYPE) -> OperationRes
 	var asm: String = ""
 	if (operand.value == "+"):
 		return compute_addition(a, b)
+	if (operand.value == "-"):
+		return compute_substraction(a, b)
 	
-	show_error("Something went terribly wrong in the compute operation function (+)")
+	show_error("Something went terribly wrong in the compute operation function")
 	return OperationResul.new(VAR_TYPE.WORD, "")
 
 func compute_addition(a: VAR_TYPE, b: VAR_TYPE):
@@ -315,6 +318,61 @@ func compute_addition(a: VAR_TYPE, b: VAR_TYPE):
 		return OperationResul.new(VAR_TYPE.QUARDWORD, asm)
 	
 	show_error("Something went terribly wrong in the compute addition function (+)")
+	return OperationResul.new(VAR_TYPE.WORD, "")
+
+func compute_substraction(a: VAR_TYPE, b: VAR_TYPE):
+	var asm: String = ""
+	while (b < a):
+		asm += ascend_mem(b)
+		b += 1
+	asm += swap_in_stack(a, b)
+	# NOW B I LOWER THAN A
+	while (a < b):
+		asm += ascend_mem(a)
+		a += 1
+		
+	if (a != b):
+		show_error("Something went terribly wrong in the compute substraction function (-)")
+		return OperationResul.new(VAR_TYPE.WORD, "")
+		
+	if (a == VAR_TYPE.BYTE):
+		asm += "pop AX\n"
+		asm += "pop DX\n"
+		if (USING_SIGNED):
+			asm += "cbw\n"
+		else:
+			asm += "mov AH, 0h\n"
+		asm += "sub AL, DL\n"
+		asm += "sbb AH, 0h\n"
+		asm += "push AX\n"
+		return OperationResul.new(VAR_TYPE.WORD, asm)
+		
+	if (a == VAR_TYPE.WORD):
+		asm += "pop AX\n"
+		asm += "pop BX\n"
+		asm += "sub AX, BX\n"
+		asm += "push AX\n"
+		return OperationResul.new(VAR_TYPE.WORD, asm)
+		
+	if (a == VAR_TYPE.DOUBLEWORD):
+		asm += "pop EAX\n"
+		asm += "pop EDX\n"
+		asm += "sub EAX, EDX\n"
+		asm += "push EAX\n"
+		return OperationResul.new(VAR_TYPE.DOUBLEWORD, asm)
+	
+	if (a == VAR_TYPE.QUARDWORD):
+		asm += "pop EAX\n"
+		asm += "pop EDX\n"
+		asm += "pop EBX\n"
+		asm += "pop ECX\n"
+		asm += "sub EAX, EBX\n"
+		asm += "sbb EDX, ECX\n"
+		asm += "push EDX\n"
+		asm += "push EAX\n"
+		return OperationResul.new(VAR_TYPE.QUARDWORD, asm)
+	
+	show_error("Something went terribly wrong in the compute substraction function (-)")
 	return OperationResul.new(VAR_TYPE.WORD, "")
 
 class OperationResul:
